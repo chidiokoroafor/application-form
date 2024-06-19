@@ -15,7 +15,7 @@ namespace ApplicationFormServer.Services
         {
             _container = cosmosClient.GetContainer(databaseName, containerName);
         }
-        public async Task AddAsync(QuestionDto question)
+        public async Task AddQuestionAsync(QuestionDto question)
         {
             var newQuestion = new Question
             {
@@ -43,12 +43,7 @@ namespace ApplicationFormServer.Services
             await _container.CreateItemAsync(newQuestion, new PartitionKey(newQuestion.Id));
         }
 
-        public Task DeleteAsync(string id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<Question> GetAsync(string id)
+        public async Task<Question> GetQuestionByIdAsync(string id)
         {
             try
             {
@@ -61,7 +56,7 @@ namespace ApplicationFormServer.Services
             }
         }
 
-        public async Task<IEnumerable<Question>> GetMultipleAsync(string query)
+        public async Task<IEnumerable<Question>> GetAllQuestionsByTypeAsync(string query)
         {
             var parameterizedQuery = new QueryDefinition(
                 query: "SELECT * FROM q WHERE (q.questionType = @type)"
@@ -83,9 +78,9 @@ namespace ApplicationFormServer.Services
             return results;
         }
 
-        public async Task UpdateAsync(string id, QuestionUpdateDto question)
+        public async Task UpdateQuestionAsync(string id, QuestionUpdateDto question)
         {
-            var targetQuestion = await GetAsync(id);
+            var targetQuestion = await GetQuestionByIdAsync(id);
 
             if (targetQuestion != null)
             {

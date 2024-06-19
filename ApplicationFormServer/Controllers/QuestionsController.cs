@@ -18,35 +18,38 @@ namespace ApplicationFormServer.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id)
+        public async Task<IActionResult> GetQuestion(string id)
         {
-            return Ok(await _questionService.GetAsync(id));
+            return Ok(await _questionService.GetQuestionByIdAsync(id));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] QuestionDto question)
+        public async Task<IActionResult> CreateQuestion([FromBody] QuestionDto question)
         {
-           
-            await _questionService.AddAsync(question);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid object request");
+            }
+
+            await _questionService.AddQuestionAsync(question);
             return Ok(question);
-            //return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Edit([FromBody] QuestionUpdateDto question, string id)
+        public async Task<IActionResult> EditQuestion([FromBody] QuestionUpdateDto question, string id)
         {
             if (question.Id != id)
             {
                 return BadRequest("Invalid request");
             }
-            await _questionService.UpdateAsync(id, question);
+            await _questionService.UpdateQuestionAsync(id, question);
             return NoContent();
         }
 
         [HttpGet]
-        public async Task<IActionResult> List(string questionType)
+        public async Task<IActionResult> GetQuestionsbyType(string questionType)
         {
-            return Ok(await _questionService.GetMultipleAsync(questionType));
+            return Ok(await _questionService.GetAllQuestionsByTypeAsync(questionType));
         }
     }
 }
